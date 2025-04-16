@@ -32,11 +32,6 @@ Below are links to the five resolved issues, each with test code, documentation,
    - [Issue #B: Test Coverage & Reliability](https://github.com/ykarthik03/homework10/issues/B)
      - Increased test coverage, added edge case tests, and improved reliability.
 
-6. **Instructor Video Issue**
-   - [Issue #C: (Describe the sixth issue here)](https://github.com/ykarthik03/homework10/issues/C)
-     - *(You will fill this in after describing the sixth issue from the instructor video.)*
-
----
 
 ## Dockerhub Image
 
@@ -46,10 +41,7 @@ Below are links to the five resolved issues, each with test code, documentation,
 
 ## Test Coverage
 
-- **Coverage:** 83% (see `coverage.txt` for details)
-- *(If you improve coverage to 90%+, update this section and add a badge or screenshot)*
-
----
+- **Coverage:** 83% 
 
 ## Reflection
 
@@ -77,17 +69,3 @@ Collaboratively, I practiced using GitHub Issues, branching, and pull requests t
    ```
 
 ---
-
-## Links
-
-- [Issues](https://github.com/ykarthik03/homework10/issues)
-- [Pull Requests](https://github.com/ykarthik03/homework10/pulls)
-- [Dockerhub Image](https://hub.docker.com/r/ky253/homework10)
-
----
-
-## Notes
-
-- Be sure to fill in the actual issue numbers/URLs.
-- Add a screenshot or badge for coverage if possible.
-- Fill in the sixth issue after you describe it.
