@@ -76,8 +76,27 @@ class UserService:
     @classmethod
     async def update(cls, session: AsyncSession, user_id: UUID, update_data: Dict[str, str]) -> Optional[User]:
         try:
-            # validated_data = UserUpdate(**update_data).dict(exclude_unset=True)
-            validated_data = UserUpdate(**update_data).dict(exclude_unset=True)
+            try:
+                validated_data = UserUpdate(**update_data).dict(exclude_unset=True)
+            except ValidationError as e:
+                logger.error(f"Validation error during user update: {e}")
+                return None
+
+            # Explicitly check password complexity if password is present
+            if 'password' in update_data and update_data['password'] is not None:
+                try:
+                    UserUpdate.validate_password(update_data['password'])
+                except ValueError as e:
+                    logger.error(f"Password validation failed: {e}")
+                    return None
+
+            # Enforce nickname uniqueness if updating nickname
+            if 'nickname' in validated_data:
+                new_nickname = validated_data['nickname']
+                existing_user = await cls.get_by_nickname(session, new_nickname)
+                if existing_user and str(existing_user.id) != str(user_id):
+                    logger.error(f"Nickname '{new_nickname}' already exists for another user.")
+                    return None
 
             if 'password' in validated_data:
                 validated_data['hashed_password'] = hash_password(validated_data.pop('password'))

@@ -1,0 +1,620 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.1.1, pluggy-1.4.0
+rootdir: /home/ykarthik/homework10
+configfile: pytest.ini
+testpaths: tests
+plugins: cov-5.0.0, Faker-24.4.0, anyio-4.3.0, mock-3.14.0, asyncio-0.23.6
+asyncio: mode=Mode.AUTO
+collected 114 items
+
+tests/test_api/test_users_api.py EEEEEE.......EEEEEE                     [ 16%]
+tests/test_conftest.py ........                                          [ 23%]
+tests/test_email.py F                                                    [ 24%]
+tests/test_link_generation.py ...                                        [ 27%]
+tests/test_models/test_user_model.py ............                        [ 37%]
+tests/test_schemas/test_user_schemas.py FFFFF................FFFFFFFF... [ 65%]
+....                                                                     [ 69%]
+tests/test_security.py ..........                                        [ 78%]
+tests/test_services/test_user_service.py .........................       [100%]
+
+==================================== ERRORS ====================================
+_______________ ERROR at setup of test_create_user_access_denied _______________
+file /home/ykarthik/homework10/tests/test_api/test_users_api.py, line 11
+  @pytest.mark.asyncio
+  async def test_create_user_access_denied(async_client, user_token, email_service):
+      headers = {"Authorization": f"Bearer {user_token}"}
+      # Define user data for the test
+      user_data = {
+          "nickname": generate_nickname(),
+          "email": "test@example.com",
+          "password": "sS#fdasrongPassword123!",
+      }
+      # Send a POST request to create a user
+      response = await async_client.post("/users/", json=user_data, headers=headers)
+      # Asserts
+      assert response.status_code == 403
+E       fixture 'user_token' not found
+>       available fixtures: _session_event_loop, _session_faker, admin_user, anyio_backend, anyio_backend_name, anyio_backend_options, async_client, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, class_mocker, cov, db_session, doctest_namespace, email_service, event_loop, event_loop_policy, faker, initialize_database, locked_user, login_request_data, manager_user, mocker, module_mocker, monkeypatch, no_cover, package_mocker, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, session_mocker, setup_database, tests/test_api/test_users_api.py::<event_loop>, tests::<event_loop>, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, unverified_user, user, user_base_data, user_base_data_invalid, user_create_data, user_response_data, user_update_data, users_with_same_role_50_users, verified_user
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/ykarthik/homework10/tests/test_api/test_users_api.py:11
+______________ ERROR at setup of test_retrieve_user_access_denied ______________
+file /home/ykarthik/homework10/tests/test_api/test_users_api.py, line 26
+  @pytest.mark.asyncio
+  async def test_retrieve_user_access_denied(async_client, verified_user, user_token):
+      headers = {"Authorization": f"Bearer {user_token}"}
+      response = await async_client.get(f"/users/{verified_user.id}", headers=headers)
+      assert response.status_code == 403
+E       fixture 'user_token' not found
+>       available fixtures: _session_event_loop, _session_faker, admin_user, anyio_backend, anyio_backend_name, anyio_backend_options, async_client, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, class_mocker, cov, db_session, doctest_namespace, email_service, event_loop, event_loop_policy, faker, initialize_database, locked_user, login_request_data, manager_user, mocker, module_mocker, monkeypatch, no_cover, package_mocker, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, session_mocker, setup_database, tests/test_api/test_users_api.py::<event_loop>, tests::<event_loop>, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, unverified_user, user, user_base_data, user_base_data_invalid, user_create_data, user_response_data, user_update_data, users_with_same_role_50_users, verified_user
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/ykarthik/homework10/tests/test_api/test_users_api.py:26
+_____________ ERROR at setup of test_retrieve_user_access_allowed ______________
+file /home/ykarthik/homework10/tests/test_api/test_users_api.py, line 32
+  @pytest.mark.asyncio
+  async def test_retrieve_user_access_allowed(async_client, admin_user, admin_token):
+      headers = {"Authorization": f"Bearer {admin_token}"}
+      response = await async_client.get(f"/users/{admin_user.id}", headers=headers)
+      assert response.status_code == 200
+      assert response.json()["id"] == str(admin_user.id)
+E       fixture 'admin_token' not found
+>       available fixtures: _session_event_loop, _session_faker, admin_user, anyio_backend, anyio_backend_name, anyio_backend_options, async_client, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, class_mocker, cov, db_session, doctest_namespace, email_service, event_loop, event_loop_policy, faker, initialize_database, locked_user, login_request_data, manager_user, mocker, module_mocker, monkeypatch, no_cover, package_mocker, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, session_mocker, setup_database, tests/test_api/test_users_api.py::<event_loop>, tests::<event_loop>, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, unverified_user, user, user_base_data, user_base_data_invalid, user_create_data, user_response_data, user_update_data, users_with_same_role_50_users, verified_user
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/ykarthik/homework10/tests/test_api/test_users_api.py:32
+____________ ERROR at setup of test_update_user_email_access_denied ____________
+file /home/ykarthik/homework10/tests/test_api/test_users_api.py, line 39
+  @pytest.mark.asyncio
+  async def test_update_user_email_access_denied(async_client, verified_user, user_token):
+      updated_data = {"email": f"updated_{verified_user.id}@example.com"}
+      headers = {"Authorization": f"Bearer {user_token}"}
+      response = await async_client.put(f"/users/{verified_user.id}", json=updated_data, headers=headers)
+      assert response.status_code == 403
+E       fixture 'user_token' not found
+>       available fixtures: _session_event_loop, _session_faker, admin_user, anyio_backend, anyio_backend_name, anyio_backend_options, async_client, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, class_mocker, cov, db_session, doctest_namespace, email_service, event_loop, event_loop_policy, faker, initialize_database, locked_user, login_request_data, manager_user, mocker, module_mocker, monkeypatch, no_cover, package_mocker, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, session_mocker, setup_database, tests/test_api/test_users_api.py::<event_loop>, tests::<event_loop>, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, unverified_user, user, user_base_data, user_base_data_invalid, user_create_data, user_response_data, user_update_data, users_with_same_role_50_users, verified_user
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/ykarthik/homework10/tests/test_api/test_users_api.py:39
+___________ ERROR at setup of test_update_user_email_access_allowed ____________
+file /home/ykarthik/homework10/tests/test_api/test_users_api.py, line 46
+  @pytest.mark.asyncio
+  async def test_update_user_email_access_allowed(async_client, admin_user, admin_token):
+      updated_data = {"email": f"updated_{admin_user.id}@example.com"}
+      headers = {"Authorization": f"Bearer {admin_token}"}
+      response = await async_client.put(f"/users/{admin_user.id}", json=updated_data, headers=headers)
+      assert response.status_code == 200
+      assert response.json()["email"] == updated_data["email"]
+E       fixture 'admin_token' not found
+>       available fixtures: _session_event_loop, _session_faker, admin_user, anyio_backend, anyio_backend_name, anyio_backend_options, async_client, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, class_mocker, cov, db_session, doctest_namespace, email_service, event_loop, event_loop_policy, faker, initialize_database, locked_user, login_request_data, manager_user, mocker, module_mocker, monkeypatch, no_cover, package_mocker, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, session_mocker, setup_database, tests/test_api/test_users_api.py::<event_loop>, tests::<event_loop>, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, unverified_user, user, user_base_data, user_base_data_invalid, user_create_data, user_response_data, user_update_data, users_with_same_role_50_users, verified_user
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/ykarthik/homework10/tests/test_api/test_users_api.py:46
+______________________ ERROR at setup of test_delete_user ______________________
+file /home/ykarthik/homework10/tests/test_api/test_users_api.py, line 55
+  @pytest.mark.asyncio
+  async def test_delete_user(async_client, admin_user, admin_token):
+      headers = {"Authorization": f"Bearer {admin_token}"}
+      delete_response = await async_client.delete(f"/users/{admin_user.id}", headers=headers)
+      assert delete_response.status_code == 204
+      # Verify the user is deleted
+      fetch_response = await async_client.get(f"/users/{admin_user.id}", headers=headers)
+      assert fetch_response.status_code == 404
+E       fixture 'admin_token' not found
+>       available fixtures: _session_event_loop, _session_faker, admin_user, anyio_backend, anyio_backend_name, anyio_backend_options, async_client, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, class_mocker, cov, db_session, doctest_namespace, email_service, event_loop, event_loop_policy, faker, initialize_database, locked_user, login_request_data, manager_user, mocker, module_mocker, monkeypatch, no_cover, package_mocker, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, session_mocker, setup_database, tests/test_api/test_users_api.py::<event_loop>, tests::<event_loop>, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, unverified_user, user, user_base_data, user_base_data_invalid, user_create_data, user_response_data, user_update_data, users_with_same_role_50_users, verified_user
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/ykarthik/homework10/tests/test_api/test_users_api.py:55
+______________ ERROR at setup of test_delete_user_does_not_exist _______________
+file /home/ykarthik/homework10/tests/test_api/test_users_api.py, line 145
+  @pytest.mark.asyncio
+  async def test_delete_user_does_not_exist(async_client, admin_token):
+      non_existent_user_id = "00000000-0000-0000-0000-000000000000"  # Valid UUID format
+      headers = {"Authorization": f"Bearer {admin_token}"}
+      delete_response = await async_client.delete(f"/users/{non_existent_user_id}", headers=headers)
+      assert delete_response.status_code == 404
+E       fixture 'admin_token' not found
+>       available fixtures: _session_event_loop, _session_faker, admin_user, anyio_backend, anyio_backend_name, anyio_backend_options, async_client, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, class_mocker, cov, db_session, doctest_namespace, email_service, event_loop, event_loop_policy, faker, initialize_database, locked_user, login_request_data, manager_user, mocker, module_mocker, monkeypatch, no_cover, package_mocker, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, session_mocker, setup_database, tests/test_api/test_users_api.py::<event_loop>, tests::<event_loop>, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, unverified_user, user, user_base_data, user_base_data_invalid, user_create_data, user_response_data, user_update_data, users_with_same_role_50_users, verified_user
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/ykarthik/homework10/tests/test_api/test_users_api.py:145
+__________________ ERROR at setup of test_update_user_github ___________________
+file /home/ykarthik/homework10/tests/test_api/test_users_api.py, line 152
+  @pytest.mark.asyncio
+  async def test_update_user_github(async_client, admin_user, admin_token):
+      updated_data = {"github_profile_url": "http://www.github.com/kaw393939"}
+      headers = {"Authorization": f"Bearer {admin_token}"}
+      response = await async_client.put(f"/users/{admin_user.id}", json=updated_data, headers=headers)
+      assert response.status_code == 200
+      assert response.json()["github_profile_url"] == updated_data["github_profile_url"]
+E       fixture 'admin_token' not found
+>       available fixtures: _session_event_loop, _session_faker, admin_user, anyio_backend, anyio_backend_name, anyio_backend_options, async_client, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, class_mocker, cov, db_session, doctest_namespace, email_service, event_loop, event_loop_policy, faker, initialize_database, locked_user, login_request_data, manager_user, mocker, module_mocker, monkeypatch, no_cover, package_mocker, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, session_mocker, setup_database, tests/test_api/test_users_api.py::<event_loop>, tests::<event_loop>, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, unverified_user, user, user_base_data, user_base_data_invalid, user_create_data, user_response_data, user_update_data, users_with_same_role_50_users, verified_user
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/ykarthik/homework10/tests/test_api/test_users_api.py:152
+_________________ ERROR at setup of test_update_user_linkedin __________________
+file /home/ykarthik/homework10/tests/test_api/test_users_api.py, line 160
+  @pytest.mark.asyncio
+  async def test_update_user_linkedin(async_client, admin_user, admin_token):
+      updated_data = {"linkedin_profile_url": "http://www.linkedin.com/kaw393939"}
+      headers = {"Authorization": f"Bearer {admin_token}"}
+      response = await async_client.put(f"/users/{admin_user.id}", json=updated_data, headers=headers)
+      assert response.status_code == 200
+      assert response.json()["linkedin_profile_url"] == updated_data["linkedin_profile_url"]
+E       fixture 'admin_token' not found
+>       available fixtures: _session_event_loop, _session_faker, admin_user, anyio_backend, anyio_backend_name, anyio_backend_options, async_client, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, class_mocker, cov, db_session, doctest_namespace, email_service, event_loop, event_loop_policy, faker, initialize_database, locked_user, login_request_data, manager_user, mocker, module_mocker, monkeypatch, no_cover, package_mocker, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, session_mocker, setup_database, tests/test_api/test_users_api.py::<event_loop>, tests::<event_loop>, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, unverified_user, user, user_base_data, user_base_data_invalid, user_create_data, user_response_data, user_update_data, users_with_same_role_50_users, verified_user
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/ykarthik/homework10/tests/test_api/test_users_api.py:160
+__________________ ERROR at setup of test_list_users_as_admin __________________
+file /home/ykarthik/homework10/tests/test_api/test_users_api.py, line 168
+  @pytest.mark.asyncio
+  async def test_list_users_as_admin(async_client, admin_token):
+      response = await async_client.get(
+          "/users/",
+          headers={"Authorization": f"Bearer {admin_token}"}
+      )
+      assert response.status_code == 200
+      assert 'items' in response.json()
+E       fixture 'admin_token' not found
+>       available fixtures: _session_event_loop, _session_faker, admin_user, anyio_backend, anyio_backend_name, anyio_backend_options, async_client, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, class_mocker, cov, db_session, doctest_namespace, email_service, event_loop, event_loop_policy, faker, initialize_database, locked_user, login_request_data, manager_user, mocker, module_mocker, monkeypatch, no_cover, package_mocker, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, session_mocker, setup_database, tests/test_api/test_users_api.py::<event_loop>, tests::<event_loop>, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, unverified_user, user, user_base_data, user_base_data_invalid, user_create_data, user_response_data, user_update_data, users_with_same_role_50_users, verified_user
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/ykarthik/homework10/tests/test_api/test_users_api.py:168
+_________________ ERROR at setup of test_list_users_as_manager _________________
+file /home/ykarthik/homework10/tests/test_api/test_users_api.py, line 177
+  @pytest.mark.asyncio
+  async def test_list_users_as_manager(async_client, manager_token):
+      response = await async_client.get(
+          "/users/",
+          headers={"Authorization": f"Bearer {manager_token}"}
+      )
+      assert response.status_code == 200
+E       fixture 'manager_token' not found
+>       available fixtures: _session_event_loop, _session_faker, admin_user, anyio_backend, anyio_backend_name, anyio_backend_options, async_client, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, class_mocker, cov, db_session, doctest_namespace, email_service, event_loop, event_loop_policy, faker, initialize_database, locked_user, login_request_data, manager_user, mocker, module_mocker, monkeypatch, no_cover, package_mocker, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, session_mocker, setup_database, tests/test_api/test_users_api.py::<event_loop>, tests::<event_loop>, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, unverified_user, user, user_base_data, user_base_data_invalid, user_create_data, user_response_data, user_update_data, users_with_same_role_50_users, verified_user
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/ykarthik/homework10/tests/test_api/test_users_api.py:177
+________________ ERROR at setup of test_list_users_unauthorized ________________
+file /home/ykarthik/homework10/tests/test_api/test_users_api.py, line 185
+  @pytest.mark.asyncio
+  async def test_list_users_unauthorized(async_client, user_token):
+      response = await async_client.get(
+          "/users/",
+          headers={"Authorization": f"Bearer {user_token}"}
+      )
+      assert response.status_code == 403  # Forbidden, as expected for regular user
+E       fixture 'user_token' not found
+>       available fixtures: _session_event_loop, _session_faker, admin_user, anyio_backend, anyio_backend_name, anyio_backend_options, async_client, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, class_mocker, cov, db_session, doctest_namespace, email_service, event_loop, event_loop_policy, faker, initialize_database, locked_user, login_request_data, manager_user, mocker, module_mocker, monkeypatch, no_cover, package_mocker, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, session_mocker, setup_database, tests/test_api/test_users_api.py::<event_loop>, tests::<event_loop>, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory, unverified_user, user, user_base_data, user_base_data_invalid, user_create_data, user_response_data, user_update_data, users_with_same_role_50_users, verified_user
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/ykarthik/homework10/tests/test_api/test_users_api.py:185
+=================================== FAILURES ===================================
+___________________________ test_send_markdown_email ___________________________
+
+email_service = <app.services.email_service.EmailService object at 0x7f43fc44d370>
+
+    @pytest.mark.asyncio
+    async def test_send_markdown_email(email_service):
+        user_data = {
+            "email": "test@example.com",
+            "name": "Test User",
+            "verification_url": "http://example.com/verify?token=abc123"
+        }
+>       await email_service.send_user_email(user_data, 'email_verification')
+
+tests/test_email.py:13: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+app/services/email_service.py:29: in send_user_email
+    self.smtp_client.send_email(subject_map[email_type], html_content, user_data['email'])
+app/utils/smtp_connection.py:26: in send_email
+    server.login(self.username, self.password)
+/usr/lib/python3.12/smtplib.py:739: in login
+    (code, resp) = self.auth(
+/usr/lib/python3.12/smtplib.py:642: in auth
+    (code, resp) = self.docmd("AUTH", mechanism + " " + response)
+/usr/lib/python3.12/smtplib.py:432: in docmd
+    return self.getreply()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <smtplib.SMTP object at 0x7f43fb6028d0>
+
+    def getreply(self):
+        """Get a reply from the server.
+    
+        Returns a tuple consisting of:
+    
+          - server response code (e.g. '250', or such, if all goes well)
+            Note: returns -1 if it can't read response code.
+    
+          - server response string corresponding to response code (multiline
+            responses are converted to a single, multiline string).
+    
+        Raises SMTPServerDisconnected if end-of-file is reached.
+        """
+        resp = []
+        if self.file is None:
+            self.file = self.sock.makefile('rb')
+        while 1:
+            try:
+                line = self.file.readline(_MAXLINE + 1)
+            except OSError as e:
+                self.close()
+                raise SMTPServerDisconnected("Connection unexpectedly closed: "
+                                             + str(e))
+            if not line:
+                self.close()
+>               raise SMTPServerDisconnected("Connection unexpectedly closed")
+E               smtplib.SMTPServerDisconnected: Connection unexpectedly closed
+
+/usr/lib/python3.12/smtplib.py:405: SMTPServerDisconnected
+------------------------------ Captured log call -------------------------------
+ERROR    root:smtp_connection.py:30 Failed to send email: Connection unexpectedly closed
+_____________________________ test_user_base_valid _____________________________
+
+user_base_data = {'bio': 'I am a software engineer with over 5 years of experience.', 'email': 'john.doe@example.com', 'full_name': 'John Doe', 'profile_picture_url': 'https://example.com/profile_pictures/john_doe.jpg', ...}
+
+    def test_user_base_valid(user_base_data):
+        user = UserBase(**user_base_data)
+>       assert user.nickname == user_base_data["nickname"]
+E       KeyError: 'nickname'
+
+tests/test_schemas/test_user_schemas.py:10: KeyError
+____________________________ test_user_create_valid ____________________________
+
+user_create_data = {'bio': 'I am a software engineer with over 5 years of experience.', 'email': 'john.doe@example.com', 'full_name': 'John Doe', 'password': 'SecurePassword123!', ...}
+
+    def test_user_create_valid(user_create_data):
+        user = UserCreate(**user_create_data)
+>       assert user.nickname == user_create_data["nickname"]
+E       KeyError: 'nickname'
+
+tests/test_schemas/test_user_schemas.py:16: KeyError
+____________________________ test_user_update_valid ____________________________
+
+user_update_data = {'bio': 'I specialize in backend development with Python and Node.js.', 'email': 'john.doe.new@example.com', 'full_name': 'John H. Doe', 'profile_picture_url': 'https://example.com/profile_pictures/john_doe_updated.jpg'}
+
+    def test_user_update_valid(user_update_data):
+        user_update = UserUpdate(**user_update_data)
+        assert user_update.email == user_update_data["email"]
+>       assert user_update.first_name == user_update_data["first_name"]
+E       KeyError: 'first_name'
+
+tests/test_schemas/test_user_schemas.py:23: KeyError
+___________________________ test_user_response_valid ___________________________
+
+user_response_data = {'created_at': datetime.datetime(2025, 4, 15, 23, 36, 4, 36114), 'email': 'test@example.com', 'id': 'unique-id-string', 'last_login_at': datetime.datetime(2025, 4, 15, 23, 36, 4, 36112), ...}
+
+    def test_user_response_valid(user_response_data):
+>       user = UserResponse(**user_response_data)
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for UserResponse
+E       id
+E         Input should be a valid UUID, invalid character: expected an optional prefix of `urn:uuid:` followed by [0-9a-fA-F-], found `u` at 1 [type=uuid_parsing, input_value='unique-id-string', input_type=str]
+E           For further information visit https://errors.pydantic.dev/2.6/v/uuid_parsing
+
+tests/test_schemas/test_user_schemas.py:27: ValidationError
+___________________________ test_login_request_valid ___________________________
+
+login_request_data = {'password': 'SecurePassword123!', 'username': 'john_doe_123'}
+
+    def test_login_request_valid(login_request_data):
+>       login = LoginRequest(**login_request_data)
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for LoginRequest
+E       email
+E         Field required [type=missing, input_value={'username': 'john_doe_12...': 'SecurePassword123!'}, input_type=dict]
+E           For further information visit https://errors.pydantic.dev/2.6/v/missing
+
+tests/test_schemas/test_user_schemas.py:33: ValidationError
+__________________ test_user_update_invalid_password[Short1!] __________________
+
+password = 'Short1!'
+user_update_data = {'bio': 'I specialize in backend development with Python and Node.js.', 'email': 'john.doe.new@example.com', 'full_name': 'John H. Doe', 'password': 'Short1!', ...}
+
+    @pytest.mark.parametrize("password", [
+        "Short1!",  # too short
+        "alllowercase1!",  # no uppercase
+        "ALLUPPERCASE1!",  # no lowercase
+        "NoSpecialChar1",  # no special char
+        "NoDigit!A",  # no digit
+    ])
+    def test_user_update_invalid_password(password, user_update_data):
+        user_update_data["password"] = password
+>       with pytest.raises(ValidationError):
+E       Failed: DID NOT RAISE <class 'pydantic_core._pydantic_core.ValidationError'>
+
+tests/test_schemas/test_user_schemas.py:84: Failed
+______________ test_user_update_invalid_password[alllowercase1!] _______________
+
+password = 'alllowercase1!'
+user_update_data = {'bio': 'I specialize in backend development with Python and Node.js.', 'email': 'john.doe.new@example.com', 'full_name': 'John H. Doe', 'password': 'alllowercase1!', ...}
+
+    @pytest.mark.parametrize("password", [
+        "Short1!",  # too short
+        "alllowercase1!",  # no uppercase
+        "ALLUPPERCASE1!",  # no lowercase
+        "NoSpecialChar1",  # no special char
+        "NoDigit!A",  # no digit
+    ])
+    def test_user_update_invalid_password(password, user_update_data):
+        user_update_data["password"] = password
+>       with pytest.raises(ValidationError):
+E       Failed: DID NOT RAISE <class 'pydantic_core._pydantic_core.ValidationError'>
+
+tests/test_schemas/test_user_schemas.py:84: Failed
+______________ test_user_update_invalid_password[ALLUPPERCASE1!] _______________
+
+password = 'ALLUPPERCASE1!'
+user_update_data = {'bio': 'I specialize in backend development with Python and Node.js.', 'email': 'john.doe.new@example.com', 'full_name': 'John H. Doe', 'password': 'ALLUPPERCASE1!', ...}
+
+    @pytest.mark.parametrize("password", [
+        "Short1!",  # too short
+        "alllowercase1!",  # no uppercase
+        "ALLUPPERCASE1!",  # no lowercase
+        "NoSpecialChar1",  # no special char
+        "NoDigit!A",  # no digit
+    ])
+    def test_user_update_invalid_password(password, user_update_data):
+        user_update_data["password"] = password
+>       with pytest.raises(ValidationError):
+E       Failed: DID NOT RAISE <class 'pydantic_core._pydantic_core.ValidationError'>
+
+tests/test_schemas/test_user_schemas.py:84: Failed
+______________ test_user_update_invalid_password[NoSpecialChar1] _______________
+
+password = 'NoSpecialChar1'
+user_update_data = {'bio': 'I specialize in backend development with Python and Node.js.', 'email': 'john.doe.new@example.com', 'full_name': 'John H. Doe', 'password': 'NoSpecialChar1', ...}
+
+    @pytest.mark.parametrize("password", [
+        "Short1!",  # too short
+        "alllowercase1!",  # no uppercase
+        "ALLUPPERCASE1!",  # no lowercase
+        "NoSpecialChar1",  # no special char
+        "NoDigit!A",  # no digit
+    ])
+    def test_user_update_invalid_password(password, user_update_data):
+        user_update_data["password"] = password
+>       with pytest.raises(ValidationError):
+E       Failed: DID NOT RAISE <class 'pydantic_core._pydantic_core.ValidationError'>
+
+tests/test_schemas/test_user_schemas.py:84: Failed
+_________________ test_user_update_invalid_password[NoDigit!A] _________________
+
+password = 'NoDigit!A'
+user_update_data = {'bio': 'I specialize in backend development with Python and Node.js.', 'email': 'john.doe.new@example.com', 'full_name': 'John H. Doe', 'password': 'NoDigit!A', ...}
+
+    @pytest.mark.parametrize("password", [
+        "Short1!",  # too short
+        "alllowercase1!",  # no uppercase
+        "ALLUPPERCASE1!",  # no lowercase
+        "NoSpecialChar1",  # no special char
+        "NoDigit!A",  # no digit
+    ])
+    def test_user_update_invalid_password(password, user_update_data):
+        user_update_data["password"] = password
+>       with pytest.raises(ValidationError):
+E       Failed: DID NOT RAISE <class 'pydantic_core._pydantic_core.ValidationError'>
+
+tests/test_schemas/test_user_schemas.py:84: Failed
+_________________ test_user_update_valid_password[ValidPass1!] _________________
+
+password = 'ValidPass1!'
+user_update_data = {'bio': 'I specialize in backend development with Python and Node.js.', 'email': 'john.doe.new@example.com', 'full_name': 'John H. Doe', 'password': 'ValidPass1!', ...}
+
+    @pytest.mark.parametrize("password", [
+        "ValidPass1!",
+        "Another$Good2",
+        "C0mpl3x#Passw0rd",
+    ])
+    def test_user_update_valid_password(password, user_update_data):
+        user_update_data["password"] = password
+        user = UserUpdate(**user_update_data)
+>       assert user.password == password
+
+tests/test_schemas/test_user_schemas.py:95: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = UserUpdate(email='john.doe.new@example.com', nickname=None, first_name=None, last_name=None, bio='I specialize in back...re_url='https://example.com/profile_pictures/john_doe_updated.jpg', linkedin_profile_url=None, github_profile_url=None)
+item = 'password'
+
+    def __getattr__(self, item: str) -> Any:
+        private_attributes = object.__getattribute__(self, '__private_attributes__')
+        if item in private_attributes:
+            attribute = private_attributes[item]
+            if hasattr(attribute, '__get__'):
+                return attribute.__get__(self, type(self))  # type: ignore
+    
+            try:
+                # Note: self.__pydantic_private__ cannot be None if self.__private_attributes__ has items
+                return self.__pydantic_private__[item]  # type: ignore
+            except KeyError as exc:
+                raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}') from exc
+        else:
+            # `__pydantic_extra__` can fail to be set if the model is not yet fully initialized.
+            # See `BaseModel.__repr_args__` for more details
+            try:
+                pydantic_extra = object.__getattribute__(self, '__pydantic_extra__')
+            except AttributeError:
+                pydantic_extra = None
+    
+            if pydantic_extra is not None:
+                try:
+                    return pydantic_extra[item]
+                except KeyError as exc:
+                    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}') from exc
+            else:
+                if hasattr(self.__class__, item):
+                    return super().__getattribute__(item)  # Raises AttributeError if appropriate
+                else:
+                    # this is the current error
+>                   raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+E                   AttributeError: 'UserUpdate' object has no attribute 'password'
+
+.venv/lib/python3.12/site-packages/pydantic/main.py:767: AttributeError
+________________ test_user_update_valid_password[Another$Good2] ________________
+
+password = 'Another$Good2'
+user_update_data = {'bio': 'I specialize in backend development with Python and Node.js.', 'email': 'john.doe.new@example.com', 'full_name': 'John H. Doe', 'password': 'Another$Good2', ...}
+
+    @pytest.mark.parametrize("password", [
+        "ValidPass1!",
+        "Another$Good2",
+        "C0mpl3x#Passw0rd",
+    ])
+    def test_user_update_valid_password(password, user_update_data):
+        user_update_data["password"] = password
+        user = UserUpdate(**user_update_data)
+>       assert user.password == password
+
+tests/test_schemas/test_user_schemas.py:95: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = UserUpdate(email='john.doe.new@example.com', nickname=None, first_name=None, last_name=None, bio='I specialize in back...re_url='https://example.com/profile_pictures/john_doe_updated.jpg', linkedin_profile_url=None, github_profile_url=None)
+item = 'password'
+
+    def __getattr__(self, item: str) -> Any:
+        private_attributes = object.__getattribute__(self, '__private_attributes__')
+        if item in private_attributes:
+            attribute = private_attributes[item]
+            if hasattr(attribute, '__get__'):
+                return attribute.__get__(self, type(self))  # type: ignore
+    
+            try:
+                # Note: self.__pydantic_private__ cannot be None if self.__private_attributes__ has items
+                return self.__pydantic_private__[item]  # type: ignore
+            except KeyError as exc:
+                raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}') from exc
+        else:
+            # `__pydantic_extra__` can fail to be set if the model is not yet fully initialized.
+            # See `BaseModel.__repr_args__` for more details
+            try:
+                pydantic_extra = object.__getattribute__(self, '__pydantic_extra__')
+            except AttributeError:
+                pydantic_extra = None
+    
+            if pydantic_extra is not None:
+                try:
+                    return pydantic_extra[item]
+                except KeyError as exc:
+                    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}') from exc
+            else:
+                if hasattr(self.__class__, item):
+                    return super().__getattribute__(item)  # Raises AttributeError if appropriate
+                else:
+                    # this is the current error
+>                   raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+E                   AttributeError: 'UserUpdate' object has no attribute 'password'
+
+.venv/lib/python3.12/site-packages/pydantic/main.py:767: AttributeError
+______________ test_user_update_valid_password[C0mpl3x#Passw0rd] _______________
+
+password = 'C0mpl3x#Passw0rd'
+user_update_data = {'bio': 'I specialize in backend development with Python and Node.js.', 'email': 'john.doe.new@example.com', 'full_name': 'John H. Doe', 'password': 'C0mpl3x#Passw0rd', ...}
+
+    @pytest.mark.parametrize("password", [
+        "ValidPass1!",
+        "Another$Good2",
+        "C0mpl3x#Passw0rd",
+    ])
+    def test_user_update_valid_password(password, user_update_data):
+        user_update_data["password"] = password
+        user = UserUpdate(**user_update_data)
+>       assert user.password == password
+
+tests/test_schemas/test_user_schemas.py:95: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = UserUpdate(email='john.doe.new@example.com', nickname=None, first_name=None, last_name=None, bio='I specialize in back...re_url='https://example.com/profile_pictures/john_doe_updated.jpg', linkedin_profile_url=None, github_profile_url=None)
+item = 'password'
+
+    def __getattr__(self, item: str) -> Any:
+        private_attributes = object.__getattribute__(self, '__private_attributes__')
+        if item in private_attributes:
+            attribute = private_attributes[item]
+            if hasattr(attribute, '__get__'):
+                return attribute.__get__(self, type(self))  # type: ignore
+    
+            try:
+                # Note: self.__pydantic_private__ cannot be None if self.__private_attributes__ has items
+                return self.__pydantic_private__[item]  # type: ignore
+            except KeyError as exc:
+                raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}') from exc
+        else:
+            # `__pydantic_extra__` can fail to be set if the model is not yet fully initialized.
+            # See `BaseModel.__repr_args__` for more details
+            try:
+                pydantic_extra = object.__getattribute__(self, '__pydantic_extra__')
+            except AttributeError:
+                pydantic_extra = None
+    
+            if pydantic_extra is not None:
+                try:
+                    return pydantic_extra[item]
+                except KeyError as exc:
+                    raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}') from exc
+            else:
+                if hasattr(self.__class__, item):
+                    return super().__getattribute__(item)  # Raises AttributeError if appropriate
+                else:
+                    # this is the current error
+>                   raise AttributeError(f'{type(self).__name__!r} object has no attribute {item!r}')
+E                   AttributeError: 'UserUpdate' object has no attribute 'password'
+
+.venv/lib/python3.12/site-packages/pydantic/main.py:767: AttributeError
+
+---------- coverage: platform linux, python 3.12.3-final-0 -----------
+Name                               Stmts   Miss  Cover   Missing
+----------------------------------------------------------------
+app/__init__.py                        0      0   100%
+app/database.py                       16      3    81%   23-25
+app/dependencies.py                   39     18    54%   22-27, 33-45, 49-51
+app/main.py                           16      3    81%   22-23, 27
+app/models/user_model.py              49      0   100%
+app/routers/__init__.py                0      0   100%
+app/routers/user_routes.py            84     46    45%   53-57, 89-94, 118-121, 142-151, 174-184, 196-198, 203-215, 219-232, 243-245
+app/schemas/link_schema.py             8      0   100%
+app/schemas/pagination_schema.py      20      1    95%   35
+app/schemas/token_schema.py            7      0   100%
+app/schemas/user_schemas.py           95     11    88%   71, 74-82, 87
+app/services/__init__.py               0      0   100%
+app/services/email_service.py         18      3    83%   26, 32-33
+app/services/jwt_service.py           18      2    89%   21-22
+app/services/user_service.py         180     17    91%   58-59, 65, 102, 111-115, 145, 177, 189, 199-202, 213
+app/utils/__init__.py                  0      0   100%
+app/utils/api_description.py           3      0   100%
+app/utils/common.py                    8      8     0%   1-16
+app/utils/link_generation.py          24      0   100%
+app/utils/nickname_gen.py              7      0   100%
+app/utils/security.py                 21      0   100%
+app/utils/smtp_connection.py          27      2    93%   27-28
+app/utils/template_manager.py         25      0   100%
+----------------------------------------------------------------
+TOTAL                                665    114    83%
+
+=========================== short test summary info ============================
+FAILED tests/test_email.py::test_send_markdown_email - smtplib.SMTPServerDisc...
+FAILED tests/test_schemas/test_user_schemas.py::test_user_base_valid - KeyErr...
+FAILED tests/test_schemas/test_user_schemas.py::test_user_create_valid - KeyE...
+FAILED tests/test_schemas/test_user_schemas.py::test_user_update_valid - KeyE...
+FAILED tests/test_schemas/test_user_schemas.py::test_user_response_valid - py...
+FAILED tests/test_schemas/test_user_schemas.py::test_login_request_valid - py...
+FAILED tests/test_schemas/test_user_schemas.py::test_user_update_invalid_password[Short1!]
+FAILED tests/test_schemas/test_user_schemas.py::test_user_update_invalid_password[alllowercase1!]
+FAILED tests/test_schemas/test_user_schemas.py::test_user_update_invalid_password[ALLUPPERCASE1!]
+FAILED tests/test_schemas/test_user_schemas.py::test_user_update_invalid_password[NoSpecialChar1]
+FAILED tests/test_schemas/test_user_schemas.py::test_user_update_invalid_password[NoDigit!A]
+FAILED tests/test_schemas/test_user_schemas.py::test_user_update_valid_password[ValidPass1!]
+FAILED tests/test_schemas/test_user_schemas.py::test_user_update_valid_password[Another$Good2]
+FAILED tests/test_schemas/test_user_schemas.py::test_user_update_valid_password[C0mpl3x#Passw0rd]
+ERROR tests/test_api/test_users_api.py::test_create_user_access_denied
+ERROR tests/test_api/test_users_api.py::test_retrieve_user_access_denied
+ERROR tests/test_api/test_users_api.py::test_retrieve_user_access_allowed
+ERROR tests/test_api/test_users_api.py::test_update_user_email_access_denied
+ERROR tests/test_api/test_users_api.py::test_update_user_email_access_allowed
+ERROR tests/test_api/test_users_api.py::test_delete_user
+ERROR tests/test_api/test_users_api.py::test_delete_user_does_not_exist
+ERROR tests/test_api/test_users_api.py::test_update_user_github
+ERROR tests/test_api/test_users_api.py::test_update_user_linkedin
+ERROR tests/test_api/test_users_api.py::test_list_users_as_admin
+ERROR tests/test_api/test_users_api.py::test_list_users_as_manager
+ERROR tests/test_api/test_users_api.py::test_list_users_unauthorized
+================== 14 failed, 88 passed, 12 errors in 24.34s ===================

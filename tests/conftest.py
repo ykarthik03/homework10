@@ -35,6 +35,7 @@ from app.dependencies import get_db, get_settings
 from app.utils.security import hash_password
 from app.utils.template_manager import TemplateManager
 from app.services.email_service import EmailService
+from unittest.mock import AsyncMock, patch
 from app.services.jwt_service import create_access_token
 
 fake = Faker()
@@ -212,12 +213,41 @@ async def manager_user(db_session: AsyncSession):
 
 
 # Fixtures for common test data
+
+import pytest
+from app.services.jwt_service import create_access_token
+
+@pytest.fixture
+def user_token(user):
+    # Generate a JWT token for the regular user
+    return create_access_token(data={"sub": str(user.id), "role": user.role.value})
+
+@pytest.fixture
+def admin_token(admin_user):
+    # Generate a JWT token for the admin user
+    return create_access_token(data={"sub": str(admin_user.id), "role": admin_user.role.value})
+
+@pytest.fixture
+def manager_token(manager_user):
+    # Generate a JWT token for the manager user
+    return create_access_token(data={"sub": str(manager_user.id), "role": manager_user.role.value})
+
+# Patch email sending for all tests to avoid SMTP errors
+@pytest.fixture(autouse=True)
+def patch_email(monkeypatch):
+    async def async_noop(*args, **kwargs):
+        return None
+    monkeypatch.setattr("app.services.email_service.EmailService.send_verification_email", async_noop)
+    monkeypatch.setattr("app.services.email_service.EmailService.send_user_email", async_noop)
+    yield
+
 @pytest.fixture
 def user_base_data():
     return {
-        "username": "john_doe_123",
+        "nickname": "john_doe_123",
         "email": "john.doe@example.com",
-        "full_name": "John Doe",
+        "first_name": "John",
+        "last_name": "Doe",
         "bio": "I am a software engineer with over 5 years of experience.",
         "profile_picture_url": "https://example.com/profile_pictures/john_doe.jpg"
     }
@@ -225,9 +255,10 @@ def user_base_data():
 @pytest.fixture
 def user_base_data_invalid():
     return {
-        "username": "john_doe_123",
+        "nickname": "john_doe_123",
         "email": "john.doe.example.com",
-        "full_name": "John Doe",
+        "first_name": "John",
+        "last_name": "Doe",
         "bio": "I am a software engineer with over 5 years of experience.",
         "profile_picture_url": "https://example.com/profile_pictures/john_doe.jpg"
     }
@@ -241,17 +272,21 @@ def user_create_data(user_base_data):
 def user_update_data():
     return {
         "email": "john.doe.new@example.com",
-        "full_name": "John H. Doe",
+        "first_name": "John",
+        "last_name": "Doe",
         "bio": "I specialize in backend development with Python and Node.js.",
         "profile_picture_url": "https://example.com/profile_pictures/john_doe_updated.jpg"
     }
 
 @pytest.fixture
 def user_response_data():
+    import uuid
     return {
-        "id": "unique-id-string",
-        "username": "testuser",
+        "id": str(uuid.uuid4()),
+        "nickname": "testuser",
         "email": "test@example.com",
+        "first_name": "Test",
+        "last_name": "User",
         "last_login_at": datetime.now(),
         "created_at": datetime.now(),
         "updated_at": datetime.now(),
@@ -260,4 +295,4 @@ def user_response_data():
 
 @pytest.fixture
 def login_request_data():
-    return {"username": "john_doe_123", "password": "SecurePassword123!"}
+    return {"email": "john.doe@example.com", "password": "SecurePassword123!"}

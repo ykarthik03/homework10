@@ -25,7 +25,7 @@ def test_user_update_valid(user_update_data):
 # Tests for UserResponse
 def test_user_response_valid(user_response_data):
     user = UserResponse(**user_response_data)
-    assert user.id == user_response_data["id"]
+    assert str(user.id) == str(user_response_data["id"])
     # assert user.last_login_at == user_response_data["last_login_at"]
 
 # Tests for LoginRequest
@@ -46,6 +46,53 @@ def test_user_base_nickname_invalid(nickname, user_base_data):
     user_base_data["nickname"] = nickname
     with pytest.raises(ValidationError):
         UserBase(**user_base_data)
+
+# Password complexity tests for UserCreate
+import re
+@pytest.mark.parametrize("password", [
+    "Short1!",  # too short
+    "alllowercase1!",  # no uppercase
+    "ALLUPPERCASE1!",  # no lowercase
+    "NoSpecialChar1",  # no special char
+    "NoDigit!A",  # no digit
+])
+def test_user_create_invalid_password(password, user_create_data):
+    user_create_data["password"] = password
+    with pytest.raises(ValidationError):
+        UserCreate(**user_create_data)
+
+@pytest.mark.parametrize("password", [
+    "ValidPass1!",
+    "Another$Good2",
+    "C0mpl3x#Passw0rd",
+])
+def test_user_create_valid_password(password, user_create_data):
+    user_create_data["password"] = password
+    user = UserCreate(**user_create_data)
+    assert user.password == password
+
+# Password complexity tests for UserUpdate
+@pytest.mark.parametrize("password", [
+    "Short1!",  # too short
+    "alllowercase1!",  # no uppercase
+    "ALLUPPERCASE1!",  # no lowercase
+    "NoSpecialChar1",  # no special char
+    "NoDigit!A",  # no digit
+])
+def test_user_update_invalid_password(password, user_update_data):
+    user_update_data["password"] = password
+    with pytest.raises(ValidationError):
+        UserUpdate(**user_update_data)
+
+@pytest.mark.parametrize("password", [
+    "ValidPass1!",
+    "Another$Good2",
+    "C0mpl3x#Passw0rd",
+])
+def test_user_update_valid_password(password, user_update_data):
+    user_update_data["password"] = password
+    user = UserUpdate(**user_update_data)
+    assert user.password == password
 
 # Parametrized tests for URL validation
 @pytest.mark.parametrize("url", ["http://valid.com/profile.jpg", "https://valid.com/profile.png", None])

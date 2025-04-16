@@ -13,7 +13,8 @@ async def test_create_user_with_valid_data(db_session, email_service):
         "email": "valid_user@example.com",
         "password": "ValidPassword123!",
     }
-    user = await UserService.create(db_session, user_data, email_service)
+    with patch('app.services.email_service.EmailService.send_verification_email', new=AsyncMock()):
+        user = await UserService.create(db_session, user_data, email_service)
     assert user is not None
     assert user.email == user_data["email"]
 
@@ -65,6 +66,39 @@ async def test_update_user_valid_data(db_session, user):
     assert updated_user is not None
     assert updated_user.email == new_email
 
+import pytest
+from unittest.mock import AsyncMock, patch
+
+@pytest.fixture
+async def another_user(db_session):
+    user_data = {
+        "email": "another@example.com",
+        "password": "AnotherStrong123!"
+    }
+    user = await UserService.create(db_session, user_data, AsyncMock())
+    return user
+
+# Test updating a user with duplicate nickname
+async def test_update_user_duplicate_nickname(db_session, user, another_user):
+    # Try to update 'user' to have the same nickname as 'another_user'
+    updated_user = await UserService.update(db_session, user.id, {"nickname": another_user.nickname})
+    assert updated_user is None
+
+# Test creating a user with weak password
+async def test_create_user_weak_password(db_session, email_service):
+    user_data = {
+        "email": "weakpass@example.com",
+        "password": "weak",  # Too weak
+    }
+    user = await UserService.create(db_session, user_data, email_service)
+    assert user is None
+
+# Test updating a user with weak password
+async def test_update_user_weak_password(db_session, user):
+    updated_user = await UserService.update(db_session, user.id, {"password": "weak"})
+    # If password validation is NOT enforced in update, this will not be None
+    assert updated_user is None  # Update this if you enforce validation in the service layer
+
 # Test updating a user with invalid data
 async def test_update_user_invalid_data(db_session, user):
     updated_user = await UserService.update(db_session, user.id, {"email": "invalidemail"})
@@ -95,7 +129,8 @@ async def test_register_user_with_valid_data(db_session, email_service):
         "email": "register_valid_user@example.com",
         "password": "RegisterValid123!",
     }
-    user = await UserService.register_user(db_session, user_data, email_service)
+    with patch('app.services.email_service.EmailService.send_verification_email', new=AsyncMock()):
+        user = await UserService.register_user(db_session, user_data, email_service)
     assert user is not None
     assert user.email == user_data["email"]
 
