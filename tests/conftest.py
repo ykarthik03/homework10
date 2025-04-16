@@ -238,7 +238,8 @@ def patch_email(monkeypatch):
     async def async_noop(*args, **kwargs):
         return None
     monkeypatch.setattr("app.services.email_service.EmailService.send_verification_email", async_noop)
-    monkeypatch.setattr("app.services.email_service.EmailService.send_user_email", async_noop)
+    # monkeypatch.setattr("app.services.email_service.EmailService.send_user_email", async_noop)
+
     yield
 
 @pytest.fixture

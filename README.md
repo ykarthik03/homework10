@@ -9,27 +9,27 @@
 Below are links to the five resolved issues, each with test code, documentation, and application code changes:
 
 1. **Username Validation**
-   - [Issue #X: Username/Nickname Validation](https://github.com/ykarthik03/homework10/issues/X)
+   - [Issue #1: Username/Nickname Validation](https://github.com/ykarthik03/homework10/issues/1)
      - Enforced allowed characters, minimum length, and uniqueness for nicknames.
      - Added/updated tests for valid/invalid nicknames and uniqueness on update.
 
 2. **Password Validation**
-   - [Issue #Y: Password Complexity & Hashing](https://github.com/ykarthik03/homework10/issues/Y)
+   - [Issue #2: Password Complexity & Hashing](https://github.com/ykarthik03/homework10/issues/2)
      - Enforced password complexity (length, case, digit, special char) and hashing.
      - Tests for weak/strong passwords and proper hashing.
 
 3. **Profile Field Edge Cases**
-   - [Issue #Z: Profile Field Edge Cases](https://github.com/ykarthik03/homework10/issues/Z)
+   - [Issue #3: Profile Field Edge Cases](https://github.com/ykarthik03/homework10/issues/3)
      - Tested updating bio, profile picture, and URLs both individually and in combination.
      - Ensured API handles all combinations gracefully.
 
-4. **Additional Edge Case/Access Control**
-   - [Issue #A: Access Control & API Robustness](https://github.com/ykarthik03/homework10/issues/A)
+4. **Access Control & API Robustness**
+   - [Issue #4: Access Control & API Robustness](https://github.com/ykarthik03/homework10/issues/4)
      - Tested and fixed access control for user update/delete endpoints.
      - Added tests for unauthorized/forbidden access.
 
-5. **Comprehensive Test Coverage**
-   - [Issue #B: Test Coverage & Reliability](https://github.com/ykarthik03/homework10/issues/B)
+5. **Test Coverage & Reliability**
+   - [Issue #5: Test Coverage & Reliability](https://github.com/ykarthik03/homework10/issues/5)
      - Increased test coverage, added edge case tests, and improved reliability.
 
 
@@ -41,7 +41,7 @@ Below are links to the five resolved issues, each with test code, documentation,
 
 ## Test Coverage
 
-- **Coverage:** 83% 
+- **Coverage:** 87% 
 
 ## Reflection
 

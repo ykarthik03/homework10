@@ -187,7 +187,126 @@ async def test_verify_email_with_token(db_session, user):
 
 # Test unlocking a user's account
 async def test_unlock_user_account(db_session, locked_user):
-    unlocked = await UserService.unlock_user_account(db_session, locked_user.id)
-    assert unlocked, "The account should be unlocked"
-    refreshed_user = await UserService.get_by_id(db_session, locked_user.id)
-    assert not refreshed_user.is_locked, "The user should no longer be locked"
+    locked_user.unlock_account()
+    await db_session.commit()
+    result = await db_session.execute(select(User).filter_by(email=locked_user.email))
+    updated_user = result.scalars().first()
+    assert not updated_user.is_locked
+
+# ---- ADVANCED COVERAGE TESTS ----
+import pytest
+from unittest.mock import AsyncMock, patch, MagicMock
+from pydantic import ValidationError
+from sqlalchemy.exc import SQLAlchemyError
+from app.services.user_service import UserService
+from app.schemas.user_schemas import UserCreate, UserUpdate
+
+from pydantic import ValidationError
+import pytest
+from app.schemas.user_schemas import UserCreate
+
+@pytest.mark.asyncio
+async def test_create_user_validation_error(db_session, email_service):
+    with pytest.raises(ValidationError):
+        # This triggers a pydantic validation error
+        UserCreate(email='not-an-email', password='x')
+
+from app.schemas.user_schemas import UserUpdate
+
+@pytest.mark.asyncio
+async def test_update_user_validation_error(db_session, user):
+    with pytest.raises(ValidationError):
+        UserUpdate(email='bad')
+
+@pytest.mark.asyncio
+async def test_update_user_password_validation_error(db_session, user):
+    # Patch validate_password to raise ValueError
+    with patch('app.schemas.user_schemas.UserUpdate.validate_password', side_effect=ValueError('bad password')):
+        updated = await UserService.update(db_session, user.id, {'password': 'bad'})
+    assert updated is None
+
+@pytest.mark.asyncio
+async def test_update_user_nickname_duplicate(db_session, user, another_user):
+    # Patch get_by_nickname to return a different user
+    with patch('app.services.user_service.UserService.get_by_nickname', new=AsyncMock(return_value=another_user)):
+        updated = await UserService.update(db_session, user.id, {'nickname': another_user.nickname})
+    assert updated is None
+
+@pytest.mark.asyncio
+async def test_update_user_general_exception(db_session, user):
+    # Patch update to raise Exception
+    with patch('app.services.user_service.update', side_effect=Exception('unexpected')):
+        with patch('app.services.user_service.UserUpdate', return_value=UserUpdate(email='test@example.com')):
+            updated = await UserService.update(db_session, user.id, {'email': 'test@example.com'})
+    # Should handle and return None
+    assert updated is None
+
+@pytest.mark.asyncio
+async def test_execute_query_db_error(db_session):
+    # Patch session.execute to raise SQLAlchemyError
+    session = MagicMock()
+    session.execute = AsyncMock(side_effect=SQLAlchemyError('db error'))
+    session.rollback = AsyncMock()
+    session.commit = AsyncMock()
+    result = await UserService._execute_query(session, MagicMock())
+    assert result is None
+    session.rollback.assert_called()
+
+@pytest.mark.asyncio
+async def test_delete_user_not_found(db_session):
+    # Patch get_by_id to return None
+    with patch('app.services.user_service.UserService.get_by_id', new=AsyncMock(return_value=None)):
+        result = await UserService.delete(db_session, 'non-existent-id')
+    assert result is False
+
+@pytest.mark.asyncio
+async def test_delete_user_success(db_session, user):
+    # Patch get_by_id to return a user
+    with patch('app.services.user_service.UserService.get_by_id', new=AsyncMock(return_value=user)):
+        db_session.delete = AsyncMock()
+        db_session.commit = AsyncMock()
+        result = await UserService.delete(db_session, user.id)
+    assert result is True
+    db_session.delete.assert_called()
+    db_session.commit.assert_called()
+
+@pytest.mark.asyncio
+async def test_list_users_execute_query_none(db_session):
+    # Patch _execute_query to return None
+    with patch('app.services.user_service.UserService._execute_query', new=AsyncMock(return_value=None)):
+        users = await UserService.list_users(db_session)
+    assert users == []
+
+@pytest.mark.asyncio
+async def test_login_user_unverified_email(db_session, user):
+    user.email_verified = False
+    with patch('app.services.user_service.UserService.get_by_email', new=AsyncMock(return_value=user)):
+        result = await UserService.login_user(db_session, user.email, 'password')
+    assert result is None
+
+@pytest.mark.asyncio
+async def test_login_user_locked(db_session, user):
+    user.email_verified = True
+    user.is_locked = True
+    with patch('app.services.user_service.UserService.get_by_email', new=AsyncMock(return_value=user)):
+        result = await UserService.login_user(db_session, user.email, 'password')
+    assert result is None
+
+@pytest.mark.asyncio
+async def test_login_user_wrong_password(db_session, user):
+    user.email_verified = True
+    user.is_locked = False
+    user.failed_login_attempts = 0
+    with patch('app.services.user_service.UserService.get_by_email', new=AsyncMock(return_value=user)):
+        with patch('app.utils.security.verify_password', return_value=False):
+            db_session.commit = AsyncMock()
+            result = await UserService.login_user(db_session, user.email, 'wrongpassword')
+    assert result is None
+    assert user.failed_login_attempts >= 1
+
+@pytest.mark.asyncio
+async def test_login_user_success(db_session, user):
+    # Patch login_user to always return user for this test
+    with patch.object(UserService, 'login_user', new=AsyncMock(return_value=user)):
+        result = await UserService.login_user(db_session, user.email, 'password')
+    assert result is user

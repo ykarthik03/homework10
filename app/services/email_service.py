@@ -6,8 +6,9 @@ from app.utils.template_manager import TemplateManager
 from app.models.user_model import User
 
 class EmailService:
-    def __init__(self, template_manager: TemplateManager):
-        self.smtp_client = SMTPClient(
+    def __init__(self, template_manager: TemplateManager, smtp_client: SMTPClient = None):
+        print(f"DEBUG: EmailService __init__ called with template_manager={template_manager}, smtp_client={smtp_client}")
+        self.smtp_client = smtp_client or SMTPClient(
             server=settings.smtp_server,
             port=settings.smtp_port,
             username=settings.smtp_username,
@@ -16,6 +17,7 @@ class EmailService:
         self.template_manager = template_manager
 
     async def send_user_email(self, user_data: dict, email_type: str):
+
         subject_map = {
             'email_verification': "Verify Your Account",
             'password_reset': "Password Reset Instructions",
@@ -23,10 +25,13 @@ class EmailService:
         }
 
         if email_type not in subject_map:
+    
             raise ValueError("Invalid email type")
 
+
         html_content = self.template_manager.render_template(email_type, **user_data)
-        self.smtp_client.send_email(subject_map[email_type], html_content, user_data['email'])
+
+        await self.smtp_client.send_email(subject_map[email_type], html_content, user_data['email'])
 
     async def send_verification_email(self, user: User):
         verification_url = f"{settings.server_base_url}verify-email/{user.id}/{user.verification_token}"
